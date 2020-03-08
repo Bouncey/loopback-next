@@ -158,6 +158,11 @@ export function filterByTag(tagPattern: BindingTag | RegExp): BindingTagFilter {
     filter = b => {
       for (const t in tagPattern) {
         if (tagMap[t] === ANY_TAG_VALUE) return t in b.tagMap;
+        const tagValue = b.tagMap[t];
+        if (Array.isArray(tagValue) && b.tagMap[t].includes(tagMap[t])) {
+          // Allow a single item to match an array if the item is included
+          continue;
+        }
         // One tag name/value does not match
         if (b.tagMap[t] !== tagMap[t]) return false;
       }

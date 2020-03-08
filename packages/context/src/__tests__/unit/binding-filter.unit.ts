@@ -63,6 +63,30 @@ describe('BindingFilter', () => {
       expect(filter(binding)).to.be.true();
     });
 
+    it('accepts bindings MATCHING the provided tag map with array values', () => {
+      const filter = filterByTag({
+        extensionFor: 'greeting-service',
+        name: 'my-name',
+      });
+      binding.tag({
+        extensionFor: ['greeting-service', 'anther-extension-point'],
+      });
+      binding.tag({name: 'my-name'});
+      expect(filter(binding)).to.be.true();
+    });
+
+    it('rejects bindings NOT MATCHING the provided tag map with array values', () => {
+      const filter = filterByTag({
+        extensionFor: 'extension-point-3',
+        name: 'my-name',
+      });
+      binding.tag({
+        extensionFor: ['extension-point-1', 'extension-point-2'],
+      });
+      binding.tag({name: 'my-name'});
+      expect(filter(binding)).to.be.false();
+    });
+
     it('matches ANY_TAG_VALUE if the tag name exists', () => {
       const filter = filterByTag({
         controller: ANY_TAG_VALUE,
